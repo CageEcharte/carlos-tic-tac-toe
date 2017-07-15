@@ -106,5 +106,9 @@ td {
   background-color: #b2f5d9;
 }
 
+.newgame {
+  display: none;
+}
+
 @media screen and (max-width: 750px) {
 }

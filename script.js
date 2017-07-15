@@ -1,6 +1,6 @@
 function startGame() {
-  document.winner = null;
-  docuemnt.winner2 = null;
+  document.humanPlayerIsWinner = null;
+  document.computerPlayerIsWinner = null;
 }
 
 //This is where the story begins... The player gets to chose if she or he wants to be  X or O..
@@ -84,46 +84,51 @@ function randomlySelectOpenSquare() {
   var check = new Array(9);
   var randomSelection = null;
 
-  check[0] = document.getElementById("s1");
-  check[1] = document.getElementById("s2");
-  check[2] = document.getElementById("s3");
-  check[3] = document.getElementById("s4");
-  check[4] = document.getElementById("s5");
-  check[5] = document.getElementById("s6");
-  check[6] = document.getElementById("s7");
-  check[7] = document.getElementById("s8");
-  check[8] = document.getElementById("s9");
-
-  if (check[0].innerText === document.turn) {
-    //set timeout function
-    check[4].innerText = document.AI;
-  }
-  if (check[8].innerText === document.turn) {
-    check[6].innerText = document.AI;
-  }
-  if (check[2].innerText === document.turn) {
-    check[1].innerText = document.AI;
-  }
-  if (check[7].innerText === document.turn) {
-    check[3].innerText = document.AI;
-  }
-  if (check[5].innerText === document.turn) {
-    check[8].innerText = document.AI;
+  // TODO: Refactor so your square IDs begin with s0
+  for (var i = 0; i <= 8; i++) {
+    check[i] = document.getElementById('s' + (i+1))
   }
 
-  //var filteredCheck = check.filter(x => x.innerText === "");
-  // var randomNum = Math.floor(Math.random() * filteredCheck.length)
-  // filteredCheck[randomNum].innerText = document.AI;
+  /*Filter out board and create an array of just open squares
+  0) create filtered array
+  1) looop through the filtered array of squares, and check if a AI marking would result in a win
+  2) if it does, great, mark that spot with AIs turn and the game will end
+  3) if it doesn't, then choose randomly from available square
+     OR find a square that would make the human the winner in the next turn and mark that spot to block a winning move
+  */
+  var availableSquares = check.filter(function(square, i) {
+    return !square.innerText;
+  })
+
+  for (var x = 0; x < availableSquares.length; x++) {
+    // temporarily marking available square with AI marking
+    availableSquares[x].innerText = document.AI
+    if (checkWinner2(document.AI)) {
+      // computer wins!
+      break;
+    } else {
+      availableSquares[x].innerText = ""
+      next;
+    }
+  }
+
+  // then loop again, check for a square that would make the human a winner in the next turn
+  // if there is such a square, the AI marks it
+  // if there are no squares that would result in an immediate human move, then select something at random
+
+  var randNum = Math.floor(Math.random() * availableSquares.length)
+  availableSquares[randNum].innerText = document.AI
 }
 
-function nextMove(sqaure) {
-  //ßconsole.log( sqaure );
-  if (document.winner != null) {
+function humanNextMove(sqaure) {
+  if (document.humanPlayerIsWinner) {
     getMsg(document.turn + " already won");
-  } else if (document.winner2 != null) {
+  } else if (document.computerPlayerIsWinner) {
     getMsg(document.AI + " already won");
   } else if (sqaure.innerText == "") {
+    // mark the human's choice with their marking
     sqaure.innerText = document.turn;
+
     randomlySelectOpenSquare();
     winnerSelector();
     winner2();
@@ -135,14 +140,14 @@ function nextMove(sqaure) {
 function winnerSelector() {
   if (checkWinner(document.turn)) {
     getMsg("congrats " + document.turn + " won");
-    document.winner = document.turn;
+    document.humanPlayerIsWinner = document.turn;
   }
 }
 
 function winner2() {
   if (checkWinner2(document.AI)) {
     getMsg("congrats " + document.AI + " won");
-    document.winner2 = document.AI;
+    document.computerPlayerIsWinner = document.AI;
   }
 }
 
@@ -154,10 +159,15 @@ function restart() {
   for (var i = 1; i <= 9; i++) {
     clearBox(i);
   }
-  document.winner = null;
+  document.humanPlayerIsWinner = null;
 }
 
 $(document).ready(function() {
+
+  function displayRestartGameBtn() {
+    $('.newgame').css('display', 'block')
+  }
+
   $(".newgame").click(function() {
     $(".board").show();
     $("#message").hide();
@@ -165,6 +175,7 @@ $(document).ready(function() {
   });
 
   $(".playerX").click(function() {
+    displayRestartGameBtn()
     $(".board").hide();
     $("#message").show();
     document.turn = "X";
@@ -172,10 +183,12 @@ $(document).ready(function() {
   });
 
   $(".playerO").click(function() {
+    displayRestartGameBtn()
     $(".board").hide();
     $("#message").show();
     docuemnt.turn = "O";
     document.AI = "X";
   });
+
 });
 //At the end of the game i can make a pop up that says congrats document.turn won and then have  a reset game.
