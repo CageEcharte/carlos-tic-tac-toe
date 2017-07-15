@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <h1>Welcome to my tic tac toe game</h1>
+    <div class="board">
+      <p class="player">Choose One</p>
+      <p class="playerX" onClick="player(this)">x</p>
+      <p class="playerO" onClick="playero(this)">o</p>
+    </div>
+    <div id="message"></div>
+    <table align="center">
+      <tr>
+        <td id="s1" onClick="nextMove(this)"></td>
+        <td id="s2" onClick="nextMove(this)"></td>
+        <td id="s3" onClick="nextMove(this)"></td>
+      </tr>
+      <tr>
+        <td id="s4" onClick="nextMove(this)"></td>
+        <td id="s5" onClick="nextMove(this)"></td>
+        <td id="s6" onClick="nextMove(this)"></td>
+      </tr>
+      <tr>
+        <td id="s7" onClick="nextMove(this)"></td>
+        <td id="s8" onClick="nextMove(this)"></td>
+        <td id="s9" onClick="nextMove(this)"></td>
+      </tr>
+    </table>
+    <br>
+    <button class="newgame">Start New Game</button>
+  </body>
+</html>
